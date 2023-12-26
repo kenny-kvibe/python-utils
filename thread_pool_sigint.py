@@ -48,19 +48,18 @@ class Runner:
 	def stop(cls):
 		""" Stop main thread and thread pool """
 		cls.running = False
-		if cls.main_thread is not None:
-			cls.main_thread.join(0)
-			cls.main_thread = None
 		if cls.thread_pool is not None:
 			cls.thread_pool.shutdown()
 			cls.thread_pool = None
+		if cls.main_thread is not None:
+			cls.main_thread.join(0)
+			cls.main_thread = None
 
 	@classmethod
 	def run(cls, functions: list[list] | list[tuple], signal_timeout:float = 0.5):
 		""" Run functions in a thread pool, exit with Ctrl+C """
 		functions_count = len(functions)
 		print(f'Running {functions_count} threads in a pool, exit with Ctrl+C...\n', end='', flush=True)
-		cls.running = True
 
 		def signal_interrupt(*args):
 			print('[SIGINT] Pressed: Ctrl+C\n', end='', flush=True)
@@ -73,7 +72,8 @@ class Runner:
 			cls.thread_pool = ft.ThreadPoolExecutor(functions_count)
 			for fn in functions:
 				cls.thread_pool.submit(*fn)
-
+		
+		cls.running = True
 		cls.main_thread = th.Thread(target=main_thread)
 		cls.main_thread.start()
 
