@@ -17,7 +17,7 @@ def main() -> int:
 		for i in range(functions_count)]
 
 	# Run
-	Runner.run(functions, signal_timeout=signal_timeout)
+	Runner.run(*functions, signal_timeout=signal_timeout)
 
 	print('Exiting ...\n', end='', flush=True)
 	return 0
@@ -56,24 +56,31 @@ class Runner:
 			cls.main_thread = None
 
 	@classmethod
-	def run(cls, functions: list[list] | list[tuple], signal_timeout:float = 0.5):
-		""" Run functions in a thread pool, exit with Ctrl+C """
-		functions_count = len(functions)
-		print(f'Running {functions_count} threads in a pool, exit with Ctrl+C...\n', end='', flush=True)
-
+	def register_sigint(cls):
 		def signal_interrupt(*args):
 			print('[SIGINT] Pressed: Ctrl+C\n', end='', flush=True)
 			cls.stop()
 			signal.signal(signal.SIGINT, signal.SIG_DFL)
-
 		signal.signal(signal.SIGINT, signal_interrupt)
+
+	@classmethod
+	def run(cls, *functions: list | tuple, signal_timeout:float = 0.5):
+		""" Run functions in a thread pool, exit with Ctrl+C """
+		functions_count = len(functions)
+		if functions_count == 0:
+			print('WARNING: No functions provided, will not run any Threads!\n', end='', flush=True)
+			return
 
 		def main_thread():
 			cls.thread_pool = ft.ThreadPoolExecutor(functions_count)
 			for fn in functions:
 				cls.thread_pool.submit(*fn)
-		
+
+		print(f'Running {functions_count} threads in a pool, exit with Ctrl+C...\n', end='', flush=True)
+
+		cls.register_sigint()
 		cls.running = True
+
 		cls.main_thread = th.Thread(target=main_thread)
 		cls.main_thread.start()
 
