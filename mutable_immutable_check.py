@@ -35,23 +35,27 @@ def main() -> int:
 def print_mut(cls, *cls_args):
 	name_rsep = '":'
 	length = NAME_PADD + len(name_rsep)
-	name = getattr(cls, '__name__', str(cls)) + name_rsep
 	mut_type = 'Re-referenced' if is_same_reference(cls, *cls_args) else 'Mutated'
+	name = getattr(cls, '__name__', str(cls)) + name_rsep
+	size = -1
 	if PRINT_OBJ_SIZE:
-		if cls is None or cls is True or cls is False:
-			size = sys.getsizeof(cls)
-		else:
+		try:
 			size = sys.getsizeof(cls(*cls_args))
-	else:
-		size = -1
+		except Exception:
+			size = sys.getsizeof(cls)
 	print(f'Type "{name:{length}s} {mut_type}' +
-		(f' (Size: {size})' if size >= 0 else ''))
+		(f' (Size: {size})' if PRINT_OBJ_SIZE else ''))
 
 
 def is_same_reference(cls, *cls_args) -> bool:
 	""" check if `cls` uses same reference """
-	if cls is None or cls is True or cls is False: return True
-	return cls(*cls_args) is cls(*cls_args)
+	comp = False
+	try:
+		comp = cls(*cls_args) is cls(*cls_args)
+	except Exception:
+		cls_ = cls
+		comp = cls_ is cls
+	return comp
 
 
 def is_mutated(cls, *cls_args) -> bool:
