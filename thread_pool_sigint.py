@@ -23,7 +23,7 @@ def main() -> int:
 	return 0
 
 
-def function_main_run(idx:int, function_timeout:float = 1.0):
+def function_main_run(idx: int, function_timeout: float = 1.0):
 	""" Print function for each `function_timeout` seconds timeout """
 	frame_num = 0
 	timeout = max(0.1, function_timeout)
@@ -64,7 +64,7 @@ class Runner:
 		signal.signal(signal.SIGINT, signal_interrupt)
 
 	@classmethod
-	def run(cls, *functions: list | tuple, signal_timeout:float = 0.5):
+	def run(cls, *functions: list | tuple, signal_timeout: float = 0.5):
 		""" Run functions in a thread pool, exit with Ctrl+C """
 		functions_count = len(functions)
 		if functions_count == 0:
