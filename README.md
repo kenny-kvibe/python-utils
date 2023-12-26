@@ -3,5 +3,5 @@
 > Python Utilities
 
 
-- [mutable_immutable_check.py](https://github.com/kenny-kvibe/python-utils/blob/main/mutable_immutable_check.py)
-- [thread_pool_sigint.py](https://github.com/kenny-kvibe/python-utils/blob/main/thread_pool_sigint.py)
+- `[RAW]` [**mutable_immutable_check.py**](https://raw.githubusercontent.com/kenny-kvibe/python-utils/main/mutable_immutable_check.py)
+- `[RAW]` [**thread_pool_sigint.py**](https://raw.githubusercontent.com/kenny-kvibe/python-utils/main/thread_pool_sigint.py)
